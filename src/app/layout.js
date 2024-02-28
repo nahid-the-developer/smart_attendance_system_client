@@ -3,6 +3,7 @@ import "./globals.css";
 import {SessionProvider} from "@/providers/SessionProvider";
 import {TokenProvider} from "@/context/tokenContext";
 import {AppRouterCacheProvider} from "@mui/material-nextjs/v13-appRouter";
+import ThemeProvider from "@/providers/themeProvider";
 
 const inter = Inter({subsets: ["latin"]});
 
@@ -15,14 +16,14 @@ export default function RootLayout({children}) {
     return (
         <html lang="en">
         <body className={inter.className}>
-        <AppRouterCacheProvider
-            options={{key: 'css'}}
-        >
-            <SessionProvider>
-                <TokenProvider>
-                    {children}
-                </TokenProvider>
-            </SessionProvider>
+        <AppRouterCacheProvider options={{key: 'css'}}>
+            <ThemeProvider>
+                <SessionProvider>
+                    <TokenProvider>
+                        {children}
+                    </TokenProvider>
+                </SessionProvider>
+            </ThemeProvider>
         </AppRouterCacheProvider>
         </body>
         </html>

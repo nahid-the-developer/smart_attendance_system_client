@@ -4,7 +4,8 @@ import {SessionProvider} from "@/providers/SessionProvider";
 import {TokenProvider} from "@/context/tokenContext";
 import {AppRouterCacheProvider} from "@mui/material-nextjs/v13-appRouter";
 import ThemeProvider from "@/providers/themeProvider";
-import {ThemeProvider as NextThemeProvider, useTheme} from "next-themes";
+import {ThemeProvider as NextThemeProvider} from "next-themes";
+
 
 const inter = Inter({subsets: ["latin"]});
 

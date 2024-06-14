@@ -1,11 +1,13 @@
 "use client";
 import Copyright from "@/components/Copyright";
 import { Box, Container, Typography, TextField, Button } from "@mui/material";
-import Link from "next/link";
 import { useForm } from "react-hook-form";
-
 import React, { useState } from "react";
 import RememberPassword from "@/components/rememberPassword";
+import { httpClient } from "@/utils/api";
+import { toast } from "react-toastify";
+import { CircularProgress } from '@mui/material'
+import { useRouter } from "next/navigation";
 
 export default function ForgotPassword() {
   const {
@@ -23,7 +25,7 @@ export default function ForgotPassword() {
     handleSubmit: handleSubmit2,
     formState: { errors: errors2 },
     setError: setError2,
-    reset: reset2
+    reset: reset2,
   } = useForm({
     mode: "onChange",
   });
@@ -33,28 +35,86 @@ export default function ForgotPassword() {
     handleSubmit: handleSubmit3,
     formState: { errors: errors3 },
     setError: setError3,
-    reset: reset3
+    reset: reset3,
   } = useForm({
     mode: "onChange",
   });
 
   const [steps, setSteps] = useState(1);
+  const [loader, setLoader] = useState(false)
+  const [token, setToken] = useState(null)
+  const router = useRouter()
 
   const handleForgotPassword = (data) => {
-    console.log(data);
-    setSteps(2);
-    reset();
+    setLoader(true)
+    httpClient
+      .post(`/auth/forgot_password/`, data)
+      .then((response) => {
+        toast.success(response.data?.message);
+        reset();
+        setLoader(false)
+        setSteps(2);
+      })
+      .catch((err) => {
+        const errors = err.response.data;
+        if (errors) {
+          Object.keys(errors).forEach((field) => {
+            setError(field, {
+              type: "manual",
+              message: errors[field][0],
+            });
+          });
+        }
+        setLoader(false)
+      });
   };
 
   const handleOTP = (data) => {
-    console.log(data);
-    setSteps(3)
-    reset2()
+    httpClient
+    .post(`/auth/verify-otp/`, data)
+    .then((response) => {
+      toast.success(response.data?.message);
+      setToken(response.data);
+      reset2();
+      setSteps(3);
+    })
+    .catch((err) => {
+      const errors = err.response.data;
+      if (errors) {
+        Object.keys(errors).forEach((field) => {
+          setError2(field, {
+            type: "manual",
+            message: errors[field][0],
+          });
+        });
+      }
+    });
   };
 
   const handleNewPassword = (data) => {
-    console.log(data);
-    reset3()
+    const payload = {
+      new_password: data.new_password,
+      token: token.token,
+      user_id: token.user_id
+    }
+    httpClient
+    .post(`/auth/reset-password/`, payload)
+    .then((response) => {
+      toast.success(response.data?.message);
+      reset3();
+      router.push('/auth/login/')
+    })
+    .catch((err) => {
+      const errors = err.response.data;
+      if (errors) {
+        Object.keys(errors).forEach((field) => {
+          setError3(field, {
+            type: "manual",
+            message: errors[field][0],
+          });
+        });
+      }
+    });
   };
 
   return (
@@ -105,10 +165,15 @@ export default function ForgotPassword() {
           <Button
             type="submit"
             fullWidth
+            disabled={loader}
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            Submit
+            {loader ? (
+              <CircularProgress sx={{ color: "green" }} size={30} />
+            ) : (
+              "Submit"
+            )}
           </Button>
           <RememberPassword />
         </Box>

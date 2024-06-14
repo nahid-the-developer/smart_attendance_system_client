@@ -5,6 +5,8 @@ import {TokenProvider} from "@/context/tokenContext";
 import {AppRouterCacheProvider} from "@mui/material-nextjs/v13-appRouter";
 import ThemeProvider from "@/providers/themeProvider";
 import {ThemeProvider as NextThemeProvider} from "next-themes";
+import 'react-toastify/dist/ReactToastify.css'
+import { ToastContainer } from 'react-toastify'
 
 
 const inter = Inter({subsets: ["latin"]});
@@ -24,6 +26,7 @@ export default function RootLayout({children}) {
                     <SessionProvider>
                         <TokenProvider>
                             {children}
+                            <ToastContainer />
                         </TokenProvider>
                     </SessionProvider>
                 </ThemeProvider>

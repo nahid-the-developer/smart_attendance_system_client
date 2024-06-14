@@ -9,6 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -66,11 +67,19 @@ const Navbar = ({ toggleThemeMode, darkMode }) => {
             Smart Attendance
           </Link>
         </Typography>
-        <Box display='flex' gap='20px' alignItems='center'>
-        <MaterialUISwitch checked={darkMode} onChange={toggleThemeMode} />
-        <Link href="/auth/login" style={{ textDecoration: "none" }}>
-          Login
-        </Link>
+        <Box display="flex" gap="20px" alignItems="center">
+          <MaterialUISwitch checked={darkMode} onChange={toggleThemeMode} />
+          <Link href="/auth/login" style={{ textDecoration: "none" }}>
+            Login
+          </Link>
+          <Button
+            variant="contained"
+            sx={{ ml: "30px", bgcolor: "button" }}
+            size="small"
+            onClick={() => signOut()}
+          >
+            Logout
+          </Button>
         </Box>
       </Toolbar>
     </AppBar>

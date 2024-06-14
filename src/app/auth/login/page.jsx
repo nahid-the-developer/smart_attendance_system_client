@@ -12,7 +12,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "@/components/validators";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 
@@ -20,6 +20,8 @@ export default function SignIn() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
+  const { data } = useSession()
+  // console.log(data);
 
   const {
     register,
@@ -32,29 +34,28 @@ export default function SignIn() {
   });
 
   const submitForm = (data) => {
-    // signIn('credentials', {
-    //     email: data?.email,
-    //     password: data?.password,
-    //     redirect: false,
-    // }).then((response) => {
-    //     if (response?.error) {
-    //         try {
-    //             const errors = JSON.parse(response.error)
-    //             errors.map((e) => {
-    //                 return setError(e.name, {
-    //                     type: 'manual',
-    //                     message: e.message[0],
-    //                 })
-    //             })
-    //         } catch (error) {
-    //             toast.error('Internal server error!')
-    //         }
-    //     } else {
-    //         toast.success('Login Successful')
-    //         router.push(callbackUrl ? callbackUrl : '/')
-    //     }
-    // })
-    console.log("hello world");
+    signIn("credentials", {
+      academic_id: data?.id,
+      password: data?.password,
+      redirect: false,
+    }).then((response) => {
+      if (response?.error) {
+        try {
+          const errors = JSON.parse(response.error);
+          errors.map((e) => {
+            return setError(e.name, {
+              type: "manual",
+              message: e.message[0],
+            });
+          });
+        } catch (error) {
+          toast.error("Internal server error!");
+        }
+      } else {
+        toast.success("Login Successful");
+        router.push(callbackUrl ? callbackUrl : "/");
+      }
+    });
   };
 
   return (
@@ -119,7 +120,9 @@ export default function SignIn() {
           </Button>
 
           <Link href="/auth/forgot_password/">
-            <Typography variant="body2" sx={{textAlign: 'center'}}>Forgot password?</Typography>
+            <Typography variant="body2" sx={{ textAlign: "center" }}>
+              Forgot password?
+            </Typography>
           </Link>
         </Box>
       </Box>

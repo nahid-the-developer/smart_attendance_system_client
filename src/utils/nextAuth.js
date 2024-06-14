@@ -8,9 +8,9 @@ export const authOptions = {
         CredentialsProvider({
             name: 'credentials',
             credentials: {},
-            async authorize({email, password}) {
+            async authorize({academic_id, password}) {
                 const payload = {
-                    email,
+                    academic_id,
                     password,
                 }
                 try {
@@ -35,14 +35,16 @@ export const authOptions = {
                 return {
                     ...token,
                     accessToken: user?.token,
-                    user_id: user?.user_id,
+                    role: user?.role,
+                    user: user?.user,
                 }
             }
             return token
         },
         async session({session, token}) {
-            session.user.accessToken = token?.accessToken
-            session.user.user_id = token?.user_id
+            session.accessToken = token?.accessToken
+            session.role = token?.role
+            session.user = token?.user
             return session
         },
     },

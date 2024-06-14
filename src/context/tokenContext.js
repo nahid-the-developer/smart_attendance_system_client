@@ -12,7 +12,7 @@ export const TokenProvider = ({children}) => {
     useEffect(() => {
         if (session) {
             httpClient.defaults.headers.common['Authorization'] =
-                `Bearer ${session?.user.accessToken}`
+                `Bearer ${session?.accessToken}`
             setTokenStatus('added')
         } else {
             httpClient.defaults.headers.common['Authorization'] = ''

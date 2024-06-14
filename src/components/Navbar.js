@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   AppBar,
   Box,
-  Button,
+  MenuItem,
   styled,
   Switch,
   Toolbar,
   Typography,
 } from "@mui/material";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
+import { TokenContext } from "@/context/tokenContext";
+import ProfileOption from "./profileOption";
+import "../app/globals.css";
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -59,9 +61,11 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 }));
 
 const Navbar = ({ toggleThemeMode, darkMode }) => {
+  const tokenContext = useContext(TokenContext);
+
   return (
     <AppBar position="sticky">
-      <Toolbar>
+      <Toolbar className="nav-container">
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           <Link href="/" style={{ textDecoration: "none" }}>
             Smart Attendance
@@ -69,17 +73,18 @@ const Navbar = ({ toggleThemeMode, darkMode }) => {
         </Typography>
         <Box display="flex" gap="20px" alignItems="center">
           <MaterialUISwitch checked={darkMode} onChange={toggleThemeMode} />
-          <Link href="/auth/login" style={{ textDecoration: "none" }}>
-            Login
-          </Link>
-          <Button
-            variant="contained"
-            sx={{ ml: "30px", bgcolor: "button" }}
-            size="small"
-            onClick={() => signOut()}
-          >
-            Logout
-          </Button>
+
+          {tokenContext === "added" ? (
+          
+            <ProfileOption/>
+        
+          ) : (
+            <MenuItem>
+              <Link href="/auth/login" style={{ textDecoration: "none", color: "inherit" }}>
+                Login
+              </Link>
+            </MenuItem>
+          )}
         </Box>
       </Toolbar>
     </AppBar>

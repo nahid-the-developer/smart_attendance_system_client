@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { TokenContext } from "@/context/tokenContext";
-import ProfileOption from "./profileOption";
+import ProfileOption from "./profile/profileOption";
 import "../app/globals.css";
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
@@ -67,7 +67,7 @@ const Navbar = ({ toggleThemeMode, darkMode }) => {
     <AppBar position="sticky">
       <Toolbar className="nav-container">
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          <Link href="/" style={{ textDecoration: "none" }}>
+          <Link href="/" style={{ textDecoration: "none", color: "inherit" }}>
             Smart Attendance
           </Link>
         </Typography>
@@ -75,9 +75,7 @@ const Navbar = ({ toggleThemeMode, darkMode }) => {
           <MaterialUISwitch checked={darkMode} onChange={toggleThemeMode} />
 
           {tokenContext === "added" ? (
-          
             <ProfileOption/>
-        
           ) : (
             <MenuItem>
               <Link href="/auth/login" style={{ textDecoration: "none", color: "inherit" }}>
